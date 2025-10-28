@@ -26,9 +26,10 @@ class Cliente extends Model
         'nicho_id',
     ];
 
-    // Cast para datetime
-    protected $dates = [
-        'ultimoContato',
+   protected $casts = [
+        // Adicione esta linha:
+        'ultimoContato' => 'datetime', 
+        // Seus outros casts (timestamps, etc.)
     ];
 
     // Relacionamento: um cliente pertence a um nicho

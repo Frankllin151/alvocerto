@@ -13,8 +13,8 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [ProspeccaoController::class, 'index'])->name('dashboard');
     Route::post('/clientes/create', [ProspeccaoController::class, 'create'])->name('clientes.create');
-    
-   
+    Route::get('/dashboard/clientes/{id}', [ProspeccaoController::class, 'show'])->name('clientes.show'); 
+   Route::put('/dashboard/clientes/{id}/update', [ProspeccaoController::class, 'update'])->name('clientes.update');
 });
 
 

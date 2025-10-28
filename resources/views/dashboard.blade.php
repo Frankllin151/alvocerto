@@ -3,7 +3,7 @@
       
          <h2 class="text-2xl font-bold text-gray-800" id="page-title"> {{ __('Inicio') }}</h2>
     </x-slot>
-
+@props(['clienteId' => null])
 <div class="flex justify-between items-center">
      <h1 class="text-2xl font-bold mb-4">Clientes</h1>
     <x-primary-button id="modalAddButton">
@@ -28,9 +28,13 @@
                     </span>
                 </p>
                 <p class="text-sm text-gray-500">
-                    Último Contato:
-                    {{ $c->ultimoContato}}
-                </p>
+    Último Contato:
+    {{ 
+        $c->ultimoContato 
+        ? $c->ultimoContato->format('d/m/Y H:i') 
+        : 'N/A' 
+    }}
+</p>
             </div>
 
             <!-- Botão 3 pontinhos -->
@@ -75,7 +79,8 @@
         @endforeach
     </div>
 
-<x-modal-client />
+    
+<x-modal-client :cliente="$clienteId"  />
     <script>
     function toggleDropdown(button) {
         const dropdown = button.nextElementSibling;
@@ -99,11 +104,12 @@
 
     // Ações (exemplo — você pode substituir por modais ou rotas)
     function visualizarCliente(id) {
-        window.location.href = `/clientes/${id}`;
+        window.location.href = `dashboard/clientes/${id}`;
     }
 
     function editarCliente(id) {
-        window.location.href = `/clientes/${id}/edit`;
+        window.location.href = `dashboard?id=${id}`;
+         document.getElementById('modalAdd').classList.toggle('hidden');
     }
 
     function excluirCliente(id) {
