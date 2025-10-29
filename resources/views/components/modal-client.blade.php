@@ -129,11 +129,11 @@
 <script>
 // Abre modal
     document.getElementById('modalAddButton').addEventListener('click', () => {
+        
         document.getElementById('modalAdd').classList.remove('hidden');
     });
 
-    // Fecha modal
-    document.getElementById('closeModal').addEventListener('click', () => {
-        document.getElementById('modalAdd').classList.add('hidden');
-    });
+   
+
+    
 </script>

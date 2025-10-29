@@ -6,6 +6,12 @@
  <div class="flex justify-between">
    <h2 class="text-xl font-semibold mb-4">Detalhes do Cliente</h2>
    <div>
+
+    <x-primary-button 
+    class="bg-stone-500"
+    onclick="window.location='{{ route('dashboard') }}'">
+        Voltar
+    </x-primary-button>
     <x-primary-button id="modalAddButton">
         Editar
     </x-primary-button>
@@ -32,4 +38,11 @@
 
 
     <x-modal-client :cliente="$cliente" />
+    <script>
+         // Fecha modal
+    document.getElementById('closeModal').addEventListener('click', () => {
+        document.getElementById('modalAdd').classList.add('hidden');
+          
+    });
+    </script>
     </x-app-layout>

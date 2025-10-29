@@ -108,9 +108,36 @@
     }
 
     function editarCliente(id) {
-        window.location.href = `dashboard?id=${id}`;
-         document.getElementById('modalAdd').classList.toggle('hidden');
+    // Alterna a classe e guarda o estado (true = modal visível)
+    const modal = document.getElementById('modalAdd');
+    const isVisible = !modal.classList.contains('hidden');
+    
+    // Salva o estado como string "true" ou "false"
+    localStorage.setItem('stateModal', isVisible ? 'false' : 'true');
+    
+    // Redireciona depois de salvar
+    window.location.href = `dashboard?id=${id}`;
+}
+
+// Essa função deve ser chamada quando a página carregar
+function editaModal() {
+    const modal = document.getElementById('modalAdd');
+    const stateModal = localStorage.getItem('stateModal');
+
+    if (stateModal === 'true') {
+        modal.classList.remove('hidden'); 
+    } else {
+        modal.classList.add('hidden'); 
     }
+
+    
+    localStorage.removeItem('stateModal');
+}
+
+// Chama quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', editaModal);
+
+
 
     function excluirCliente(id) {
         if (confirm('Tem certeza que deseja excluir este cliente?')) {
@@ -123,7 +150,11 @@
             }).then(res => location.reload());
         }
     }
-
+ // Fecha modal
+    document.getElementById('closeModal').addEventListener('click', () => {
+        document.getElementById('modalAdd').classList.add('hidden');
+          window.location.href = `dashboard`;
+    });
 
 </script>
 </x-app-layout>
