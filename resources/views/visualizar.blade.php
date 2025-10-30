@@ -7,11 +7,11 @@
    <h2 class="text-xl font-semibold mb-4">Detalhes do Cliente</h2>
    <div>
 
-    <x-primary-button 
+    <x-secondary-button 
     class="bg-stone-500"
     onclick="window.location='{{ route('dashboard') }}'">
         Voltar
-    </x-primary-button>
+    </x-secondary-button>
     <x-primary-button id="modalAddButton">
         Editar
     </x-primary-button>

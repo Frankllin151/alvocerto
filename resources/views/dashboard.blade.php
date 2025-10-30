@@ -4,6 +4,38 @@
          <h2 class="text-2xl font-bold text-gray-800" id="page-title"> {{ __('Inicio') }}</h2>
     </x-slot>
 @props(['clienteId' => null])
+
+<!-- Mensagens de sucesso ou erro -->
+@if (session('success') || session('error'))
+    <div 
+        x-data="{ show: true }" 
+        x-show="show"
+        x-init="setTimeout(() => show = false, 5000)"
+        x-transition:enter="transition ease-out duration-500"
+        x-transition:enter-start="opacity-0 translate-y-[-10px]"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-500"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-[-10px]"
+        class="fixed top-4 right-4 z-50 w-auto max-w-sm rounded-lg shadow-lg p-4
+            {{ session('success') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}"
+    >
+        <div class="flex items-center justify-between">
+            <p class="font-medium text-sm">
+                {{ session('success') ?? session('error') }}
+            </p>
+
+            <button 
+                @click="show = false"
+                class="ml-3 text-gray-500 hover:text-gray-700"
+            >
+                x
+            </button>
+        </div>
+    </div>
+@endif
+<!-- Fim das mensagens -->
+
 <div class="flex justify-between items-center">
      <h1 class="text-2xl font-bold mb-4">Clientes</h1>
     <x-primary-button id="modalAddButton">
@@ -68,6 +100,8 @@
                         ✏️ Editar
                     </button>
                     <button
+                    x-data
+                     @click="$dispatch('open-modal', '{{ 'confirm-delete-' . $c->id }}')"
                         class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                         onclick="excluirCliente({{ $c->id }})"
                     >
@@ -76,8 +110,47 @@
                 </div>
             </div>
         </div>
+
+
+        <x-modal name="confirm-delete-{{ $c->id }}" maxWidth="md">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold text-gray-800">
+                    Confirmar exclusão
+                </h2>
+
+                <p class="mt-2 text-sm text-gray-600">
+                    Tem certeza que deseja excluir o cliente <strong>{{ $c->nomedaempresa ?? 'sem nome' }}</strong>?
+                    Essa ação <span class="text-red-600 font-semibold">não poderá ser desfeita</span>.
+                </p>
+
+                <div class="mt-6 flex justify-end gap-3">
+                    <!-- Botão cancelar -->
+                    <button
+                        type="button"
+                        @click="$dispatch('close-modal', '{{ 'confirm-delete-' . $c->id }}')"
+                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                    >
+                        Cancelar
+                    </button>
+
+                    <!-- Formulário de exclusão -->
+                    <form method="POST" action="{{ route('clientes.destroy', $c->id) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                        >
+                            Confirmar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </x-modal>
         @endforeach
     </div>
+
+    
 
     
 <x-modal-client :cliente="$clienteId"  />
@@ -139,17 +212,7 @@ document.addEventListener('DOMContentLoaded', editaModal);
 
 
 
-    function excluirCliente(id) {
-        if (confirm('Tem certeza que deseja excluir este cliente?')) {
-            fetch(`/clientes/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                },
-            }).then(res => location.reload());
-        }
-    }
+    
  // Fecha modal
     document.getElementById('closeModal').addEventListener('click', () => {
         document.getElementById('modalAdd').classList.add('hidden');

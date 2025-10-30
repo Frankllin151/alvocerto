@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cliente;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use PhpParser\Node\Expr\AssignOp\Mod;
+
 
 class prospeccaoController extends Controller
 {
@@ -131,6 +131,32 @@ class prospeccaoController extends Controller
     } catch (\Exception $e) {
         // Trata 500 - Qualquer outro erro interno
         return dd($e->getMessage());
+    }
+}
+
+
+
+public function destroy($id) {
+    try {
+        // Tenta encontrar o cliente
+        $cliente = Cliente::findOrFail($id);
+
+        // Deleta o cliente
+        $cliente->delete();
+
+        // Redireciona com mensagem de sucesso
+        return redirect()->route('dashboard')
+                         ->with('success', 'Cliente deletado com sucesso.');
+
+    } catch (ModelNotFoundException $e) {
+        // Redireciona com mensagem de erro se o cliente não for encontrado
+        return redirect()->route('dashboard')
+                         ->with('error', 'Cliente não encontrado.');
+
+    } catch (\Exception $e) {
+        // Redireciona com mensagem de erro para qualquer outro problema
+        return redirect()->route('dashboard')
+                         ->with('error', 'Ocorreu um erro ao deletar o cliente. Tente novamente.');
     }
 }
 }
