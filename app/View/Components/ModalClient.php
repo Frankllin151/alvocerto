@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use App\Models\Nicho;
-
+use App\Models\EstagioContato;
 class ModalClient extends Component
 {
     /**
@@ -23,6 +23,11 @@ class ModalClient extends Component
     public function render(): View|Closure|string
     {
      $nicho = Nicho::all();
-        return view('components.modal-client', ['nichos' => $nicho]);
+     
+     $estagio = EstagioContato::orderBy('updated_at', 'desc')->get();
+  
+        return view('components.modal-client', [
+        'nichos' => $nicho, 
+        'estagios' => $estagio]);
     }
 }

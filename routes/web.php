@@ -29,13 +29,17 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/dashboard/nichos/{id}/delete', [NichoController::class, 'destroy'])->name('nichos.destroy');
 });
 
+
+// Estagio Contato Routes
 Route::middleware(["auth"])->group(function () {
    Route::get("/dashboard/estagio/de/contato", [EstagioContatoController::class, "index"])->name("estagio.de.contato.index");
    Route::post("/dashboard/estagio/de/contato/create", [EstagioContatoController::class, "create"])->name("estagio.de.contato.create");
    Route::put("/dashboard/estagio/de/contato/{id}/update", [EstagioContatoController::class, "update"])->name("estagio.de.contato.update");
+   Route::delete("/dashboard/estagio/de/contato/{id}/delete", [EstagioContatoController::class, "destroy"])->name("estagio.de.contato.destroy");
 });
 
 Route::middleware('auth')->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -134,7 +134,7 @@
                         {{ __('Cancelar') }}
                     </x-secondary-button>
                     <!-- Formulário de exclusão -->
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ route('estagio.de.contato.destroy', $estagio->id) }}">
                         @csrf
                         @method('DELETE')
                         <x-primary-button type="submit">

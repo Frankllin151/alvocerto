@@ -55,11 +55,11 @@
                         <select id="estagio_de_contato" name="estagio_de_contato"
                                 class="w-full border-gray-300 rounded-lg mt-1 p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
                             <option value="">Selecione um Estágio</option>
-                            @foreach (['lead'=>'Lead','prospeccao'=>'Prospecção','negociacao'=>'Negociação','cliente'=>'Cliente'] as $key => $label)
-                                <option value="{{ $key }}" {{ old('estagio_de_contato', $cliente->estagio_de_contato ?? '') == $key ? 'selected' : '' }}>
-                                    {{ $label }}
+                            @foreach ($estagios as $estagio)
+                                <option value="{{ $estagio->nome }}" {{ old('estagio_de_contato', $cliente->estagio_de_contato ?? '') == $estagio->nome ? 'selected' : '' }}>
+                                    {{ $estagio->nome }}
                                 </option>
-                            @endforeach
+                            @endforeach 
                         </select>
                     </div>
 
