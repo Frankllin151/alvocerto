@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cliente;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
+use Illuminate\Container\Attributes\Log;
 
 class prospeccaoController extends Controller
 {
@@ -126,7 +126,9 @@ class prospeccaoController extends Controller
 
     } catch (ValidationException $e) {
         // Trata 422 - Erros de validação
-        return dd($e->errors());
+        return redirect()->back()
+                         ->withErrors($e->errors())
+                         ->withInput();
 
     } catch (\Exception $e) {
         // Trata 500 - Qualquer outro erro interno
@@ -159,4 +161,67 @@ public function destroy($id) {
                          ->with('error', 'Ocorreu um erro ao deletar o cliente. Tente novamente.');
     }
 }
+
+public function importar(Request $request)
+{
+   
+
+    try {
+     
+        $request->validate([
+          
+            'arquivo_excel' => 'required|file|mimes:xlsx,xls,csv', 
+            'nicho_id' => 'required|exists:nichos,id',
+        ]);
+
+        $file = $request->file('arquivo_excel');
+
+      
+        $path = $file->getRealPath();
+      
+        $data = \Maatwebsite\Excel\Facades\Excel::toArray([], $file);
+
+       
+        $rows = $data[0];
+
+        foreach ($rows as $index => $row) {
+       
+            if ($index === 0) {
+                continue;
+            }
+
+         
+            Cliente::create([
+                'nomedaempresa' => $row[0] ?? null,
+                'email' => $row[1] ?? null,
+                'telefone' => $row[2] ?? null,
+                'nomedoresponsavel' => $row[3] ?? null,
+                'estagio_de_contato' => $row[4] ?? null,
+                'ultimo_contato_resultado' => $row[5] ?? null,
+            
+                'ultimoContato' => isset($row[6]) && $row[6] ? \Carbon\Carbon::parse($row[6]) : null,
+                'quantidadeDeContato' => $row[7] ?? null,
+                'nicho_id' => $request->input('nicho_id'),
+            
+                'observacao' => $row[8] ?? null, 
+            ]);
+        }
+
+        // 3. Sucesso
+        return redirect()->route('dashboard')
+                         ->with('success', 'Clientes importados com sucesso!');
+
+    } catch (ValidationException $e) {
+       
+        return redirect()->back()
+                         ->withErrors($e->errors())
+                         ->withInput()->with('error', 'Erro na validação do arquivo. Verifique os dados e tente novamente.' );
+
+    } catch (\Exception $e) {
+        
+        return redirect()->back()
+                         ->with('error', 'Ocorreu um erro ao processar os dados do arquivo. Verifique o log para detalhes.' . $e->getMessage());
+    }
+}
+
 }

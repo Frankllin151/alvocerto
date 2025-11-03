@@ -18,6 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/clientes/{id}', [ProspeccaoController::class, 'show'])->name('clientes.show'); 
     Route::put('/dashboard/clientes/{id}/update', [ProspeccaoController::class, 'update'])->name('clientes.update');
     Route::delete('/dashboard/clientes/{id}/delete', [ProspeccaoController::class, 'destroy'])->name('clientes.destroy');
+    Route::post('/dashboard/clientes/importar', [ProspeccaoController::class, 'importar'])->name('clientes.importar');
 });
 
 

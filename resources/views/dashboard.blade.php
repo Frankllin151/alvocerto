@@ -38,9 +38,16 @@
 
 <div class="flex justify-between items-center">
      <h1 class="text-2xl font-bold mb-4">Clientes</h1>
-    <x-primary-button id="modalAddButton">
+   <div>
+     <x-primary-button id="modalAddButton">
                 {{ __('Novo') }}
-            </x-primary-button>
+     </x-primary-button>
+     <x-primary-button
+      x-data
+        @click="$dispatch('open-modal', 'import-modal')"
+     >{{ __('Importar em Massa (Excel)') }}</x-primary-button>
+    
+   </div>
  </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -154,6 +161,12 @@
 
     
 <x-modal-client :cliente="$clienteId"  />
+
+<x-modal name="import-modal" maxWidth="md">
+  <x-form-excel />
+</x-modal>
+
+
     <script>
     function toggleDropdown(button) {
         const dropdown = button.nextElementSibling;
