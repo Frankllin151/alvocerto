@@ -12,23 +12,47 @@ class prospeccaoController extends Controller
 {
     public function index(Request $request)
     {
-
+        
         $clienteId = $request->query("id");
 
         if($clienteId){
             try {
                  $clienteId = Cliente::with("nicho")->findOrFail($clienteId);
-                   return view('dashboard', ['clienteId' => $clienteId , 'cliente' => Cliente::all()]);
+                 $cliente =  Cliente::orderBy('updated_at', 'desc')->get();
+                   return view('dashboard', ['clienteId' => $clienteId , 'cliente' => $cliente ]);
             } catch(ModelNotFoundException $e){
                  return redirect()->route('dashboard')->with('error', 'Cliente não encontrado.');
             }
         }
+       
+        if($request->all()){
+            $fitlerMappings = [
+              "estagio_contato" => $request->query("estagio_contato") ?? null,
+              "nicho" => $request->query("nicho") ?? null,
+              "data_contato" => $request->query("data_contato") ?? null,
+              "quantidade_de_contato" => $request->query("quantidade_de_contato") ?? null,
+              "mes" => $request->query("mes") ?? null,
+              "ano" => $request->query("ano") ?? null,
+            ];
+           return  $this->FilterSeach($fitlerMappings);
 
-        $cliente= Cliente::all();
+        }
+
+      
+
+        $cliente= Cliente::orderBy('updated_at', 'desc')->get();
       
         // Passa para a view
         return view('dashboard', ['cliente' => $cliente]);
     }
+
+
+private function FilterSeach($fitlerMappings){
+    $activeFilters = array_filter($fitlerMappings);
+     return dd($activeFilters);
+     // preciso de um jeito para filtra no banco de dados e puxar dados corretamente!
+
+}
 
    public function create(Request $request)
 {

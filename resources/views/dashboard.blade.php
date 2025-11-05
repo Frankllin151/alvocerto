@@ -39,13 +39,21 @@
 <div class="flex justify-between items-center">
      <h1 class="text-2xl font-bold mb-4">Clientes</h1>
    <div>
+    <x-primary-button
+      x-data
+        @click="$dispatch('open-modal', 'modal-filtro')"
+        >{{ __('Filtrar') }}
+    </x-primary-button>
+
      <x-primary-button id="modalAddButton">
                 {{ __('Novo') }}
      </x-primary-button>
+
      <x-primary-button
       x-data
         @click="$dispatch('open-modal', 'import-modal')"
-     >{{ __('Importar em Massa (Excel)') }}</x-primary-button>
+     >{{ __('Importar em Massa (Excel)') }}
+    </x-primary-button>
     
    </div>
  </div>
@@ -164,6 +172,11 @@
 
 <x-modal name="import-modal" maxWidth="md">
   <x-form-excel />
+</x-modal>
+
+
+<x-modal name="modal-filtro" maxWidth="md">
+  <x-filtro-form />
 </x-modal>
 
 
