@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Cliente;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Container\Attributes\Log;
-
+use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Facades\DB;
 class prospeccaoController extends Controller
 {
     public function index(Request $request)
@@ -26,7 +26,7 @@ class prospeccaoController extends Controller
         }
        
         if($request->all()){
-            $fitlerMappings = [
+            $filters = [
               "estagio_contato" => $request->query("estagio_contato") ?? null,
               "nicho" => $request->query("nicho") ?? null,
               "data_contato" => $request->query("data_contato") ?? null,
@@ -34,7 +34,7 @@ class prospeccaoController extends Controller
               "mes" => $request->query("mes") ?? null,
               "ano" => $request->query("ano") ?? null,
             ];
-           return  $this->FilterSeach($fitlerMappings);
+           return  $this->FilterSeach($filters);
 
         }
 
@@ -46,13 +46,35 @@ class prospeccaoController extends Controller
         return view('dashboard', ['cliente' => $cliente]);
     }
 
+ private function FilterSeach($filters)
+{
+    $query = DB::table('clientes');
+    $query->when($filters['nicho'] ?? null, function ($q, $nicho) {
+    $q->where('nicho_id', $nicho);
+});
 
-private function FilterSeach($fitlerMappings){
-    $activeFilters = array_filter($fitlerMappings);
-     return dd($activeFilters);
-     // preciso de um jeito para filtra no banco de dados e puxar dados corretamente!
+    $query->when($filters["estagio_contato"] ?? null, function($q, $estagioContato){
+        $q->where("estagio_de_contato", $estagioContato );
+    });
+    $query->when($filters["data_contato"] ?? null ,function($q, $dateContato){
+        $q->whereDate("ultimoContato", $dateContato);
+    });
 
+    $query->when($filters["quantidade_de_contato"] ?? null ,function($q, $quantidadeContato){
+        $q->where("quantidadeDeContato", $quantidadeContato);
+    });
+    
+    $query->when($filters['mes'] ?? null, function ($q, $mes) use ($filters) {
+    $ano = $filters['ano'] ?? date('Y');
+    $q->whereMonth('updated_at', $mes)
+      ->whereYear('updated_at', $ano);
+});
+
+    $clientes = $query->get();
+return view('dashboard', ['cliente' => $clientes]);
+   
 }
+
 
    public function create(Request $request)
 {
@@ -152,7 +174,7 @@ private function FilterSeach($fitlerMappings){
         // Trata 422 - Erros de validação
         return redirect()->back()
                          ->withErrors($e->errors())
-                         ->withInput();
+                         ->withInput()->with("error" , "Não atualizado");
 
     } catch (\Exception $e) {
         // Trata 500 - Qualquer outro erro interno

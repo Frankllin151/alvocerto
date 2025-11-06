@@ -76,12 +76,15 @@
                 </p>
                 <p class="text-sm text-gray-500">
     Último Contato:
-    {{ 
-        $c->ultimoContato 
-        ? $c->ultimoContato->format('d/m/Y H:i') 
-        : 'N/A' 
+    {{
+        $c->ultimoContato
+            ? (is_string($c->ultimoContato)
+                ? \Carbon\Carbon::parse($c->ultimoContato)->format('d/m/Y H:i')
+                : $c->ultimoContato->format('d/m/Y H:i'))
+            : 'N/A'
     }}
 </p>
+
             </div>
 
             <!-- Botão 3 pontinhos -->
