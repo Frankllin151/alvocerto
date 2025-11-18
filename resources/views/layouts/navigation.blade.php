@@ -53,6 +53,19 @@
                         </a>
                     </li>
 
+                      <li>
+                        <a href="{{route("relatorio")}}" class="nav-item 
+                        {{Route::currentRouteName() == 'relatorio' ? 'active' : ''}}
+                         flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition" data-page="analytics">
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" />
+</svg>
+<span>Relatório</span>
+                        </a>
+                    </li>
+
+                    
                      <li>
                         <a href="{{route("estagio.de.contato.index")}}" class="nav-item 
                         {{Route::currentRouteName() == 'estagio.de.contato.index' ? 'active' : ''}}
@@ -61,7 +74,8 @@
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
     d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" />
 </svg>
-<span>Estágio de Contato</span>
+<span>Estágio de
+ Contato</span>
                         </a>
                     </li>
                     

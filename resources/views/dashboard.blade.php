@@ -168,6 +168,61 @@
         @endforeach
     </div>
 
+   <div class="flex justify-center items-center">
+    <div>
+
+        {{-- Botão anterior --}}
+       @if ($cliente->currentPage() > 1)
+    <a href="{{ $cliente->previousPageUrl() }}"
+        class="pagination-btn rounded-md border border-slate-300 py-2 px-3 text-sm text-slate-600 ml-2">
+        Anterior
+    </a>
+@endif
+
+       {{-- SOMENTE 3 PÁGINAS DINÂMICAS --}}
+@php
+    $current = $cliente->currentPage();
+    $last = $cliente->lastPage();
+
+    // Calcula início e fim
+    $start = max(1, $current - 1);
+    $end = min($last, $current + 1);
+
+    // Garantir 3 números quando possível
+    if ($current == 1) {
+        $start = 1;
+        $end = min(3, $last);
+    }
+
+    if ($current == $last) {
+        $end = $last;
+        $start = max(1, $last - 2);
+    }
+@endphp
+
+
+
+{{-- Loop das páginas (3 páginas apenas) --}}
+@for ($i = $start; $i <= $end; $i++)
+    <a href="{{ $cliente->url($i) }}"
+        class="pagination-btn min-w-9 rounded-md py-2 px-3 text-sm ml-2
+        {{ $i == $current 
+            ? 'bg-slate-800 text-white border border-transparent' 
+            : 'border border-slate-300 text-slate-600' }}">
+        {{ $i }}
+    </a>
+@endfor
+
+       {{-- Botão Próximo --}}
+@if ($cliente->currentPage() < $cliente->lastPage())
+    <a href="{{ $cliente->nextPageUrl() }}"
+        class="pagination-btn rounded-md border border-slate-300 py-2 px-3 text-sm text-slate-600 ml-2">
+        Próximo
+    </a>
+@endif
+
+    </div>
+</div>
     
 
     
@@ -248,5 +303,62 @@ document.addEventListener('DOMContentLoaded', editaModal);
           window.location.href = `dashboard`;
     });
 
+
+// pagination
+(function(){
+  // lê params da URL
+  function getSearchParams() {
+    return new URLSearchParams(window.location.search);
+  }
+
+  function currentPage() {
+    const p = parseInt(getSearchParams().get('page'));
+    return isNaN(p) ? 1 : p;
+  }
+
+  function currentLimit() {
+    const l = getSearchParams().get('limit');
+    return l ? l : '50'; // padrão 50 quando não existir
+  }
+
+  // navega preservando outros filtros
+  function goToPage(page) {
+    const params = getSearchParams();
+    params.set('page', page);
+    params.set('limit', currentLimit());
+    // mantém pathname (ex: /dashboard)
+    const base = window.location.origin + window.location.pathname;
+    window.location.href = base + '?' + params.toString();
+  }
+
+  // delega eventos para botões de paginação
+  document.querySelectorAll('.pagination-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const pageAttr = this.dataset.page;
+      const action = this.dataset.action;
+      let targetPage;
+
+      if (pageAttr) {
+        targetPage = parseInt(pageAttr);
+      } else if (action === 'prev') {
+        targetPage = Math.max(1, currentPage() - 1);
+      } else if (action === 'next') {
+        targetPage = currentPage() + 1;
+      } else {
+        return;
+      }
+
+      goToPage(targetPage);
+    });
+  });
+
+})();
+
+
+ window.pagination = {
+        currentPage: {{ $cliente->currentPage() }},
+        lastPage: {{ $cliente->lastPage() }},
+        limit: "{{ $perPage }}"
+    };
 </script>
 </x-app-layout>

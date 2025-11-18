@@ -15,10 +15,20 @@ class prospeccaoController extends Controller
         
         $clienteId = $request->query("id");
 
+         if($request->query("limit")){
+             $perPage = $request->query("limit", 25);
+
+              $cliente = Cliente::orderBy('updated_at', 'desc')
+        ->paginate($perPage)
+        ->appends(['limit' => $perPage]); 
+
+        return view('dashboard', ["cliente" => $cliente , "perPage" => $perPage]);
+        }
+
         if($clienteId){
             try {
                  $clienteId = Cliente::with("nicho")->findOrFail($clienteId);
-                 $cliente =  Cliente::orderBy('updated_at', 'desc')->get();
+                 $cliente =  Cliente::orderBy('updated_at', 'desc')->paginate(25);
                    return view('dashboard', ['clienteId' => $clienteId , 'cliente' => $cliente ]);
             } catch(ModelNotFoundException $e){
                  return redirect()->route('dashboard')->with('error', 'Cliente não encontrado.');
@@ -37,13 +47,15 @@ class prospeccaoController extends Controller
            return  $this->FilterSeach($filters);
 
         }
+        
+       
 
       
 
-        $cliente= Cliente::orderBy('updated_at', 'desc')->get();
-      
+        $cliente= Cliente::orderBy('updated_at', 'desc')->paginate(25);
+          $perPage =  25;
         // Passa para a view
-        return view('dashboard', ['cliente' => $cliente]);
+        return view('dashboard', ['cliente' => $cliente, "perPage" => $perPage]);
     }
 
  private function FilterSeach($filters)

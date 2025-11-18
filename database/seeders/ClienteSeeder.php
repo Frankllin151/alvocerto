@@ -7,13 +7,14 @@ use Illuminate\Database\Seeder;
 use App\Models\Cliente;
 use App\Models\Nicho;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class ClienteSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-   public function run(): void
+  public function run(): void
     {
         $nichos = Nicho::all();
 
@@ -22,47 +23,35 @@ class ClienteSeeder extends Seeder
             $nichos = Nicho::all();
         }
 
-        $clientes = [
-            [
-                'nomedaempresa' => 'Tech Solutions LTDA',
-                'email' => 'contato@techsolutions.com',
-                'telefone' => '(11) 99999-1234',
-                'nomedoresponsavel' => 'João Silva',
-                'estagio_de_contato' => 'Prospecção',
-                'ultimo_contato_resultado' => 'Aguardando resposta',
-                'ultimoContato' => Carbon::now()->subDays(2),
-                'quantidadeDeContato' => 3,
-                'observacao' => 'Interessado em sistema de gestão ERP.',
-                'nicho_id' => $nichos->where('nicho', 'Tecnologia')->first()->id ?? null,
-            ],
-            [
-                'nomedaempresa' => 'Clínica Vida Plena',
-                'email' => 'atendimento@vidaplena.com',
-                'telefone' => '(21) 98888-4567',
-                'nomedoresponsavel' => 'Maria Santos',
-                'estagio_de_contato' => 'Negociação',
-                'ultimo_contato_resultado' => 'Proposta enviada',
-                'ultimoContato' => Carbon::now()->subDay(),
-                'quantidadeDeContato' => 5,
-                'observacao' => 'Precisa de um site institucional moderno.',
-                'nicho_id' => $nichos->where('nicho', 'Saúde')->first()->id ?? null,
-            ],
-            [
-                'nomedaempresa' => 'Escola Saber+',
-                'email' => 'diretoria@sabermais.com.br',
-                'telefone' => '(31) 97777-7890',
-                'nomedoresponsavel' => 'Carlos Pereira',
-                'estagio_de_contato' => 'Cliente ativo',
-                'ultimo_contato_resultado' => 'Fechou contrato',
-                'ultimoContato' => Carbon::now(),
-                'quantidadeDeContato' => 8,
-                'observacao' => 'Sistema personalizado de gestão escolar.',
-                'nicho_id' => $nichos->where('nicho', 'Educação')->first()->id ?? null,
-            ],
+        $estagios = [
+            'Cliente ativo',
+            'Cliente',
+            'Negociação',
+            'Prospecção',
+            'Lead',
         ];
 
-        foreach ($clientes as $cliente) {
-            Cliente::create($cliente);
+        // Gerar 100 clientes para cada mês do ano inteiro
+        for ($mes = 1; $mes <= 12; $mes++) {
+
+            for ($i = 1; $i <= 100; $i++) {
+
+                // Data aleatória dentro do mês
+                $dataAleatoria = Carbon::create(date('Y'), $mes, rand(1, 28));
+
+                Cliente::create([
+                    'nomedaempresa' => 'Empresa ' . Str::upper(Str::random(5)) . " LTDA",
+                    'email' => 'contato_' . $mes . '_' . $i . '@empresa.com',
+                    'telefone' => '(' . rand(11, 99) . ') 9' . rand(1000, 9999) . '-' . rand(1000, 9999),
+                    'nomedoresponsavel' => fake()->name(),
+                    'estagio_de_contato' => $estagios[array_rand($estagios)],
+                    'ultimo_contato_resultado' => fake()->sentence(3),
+                    'ultimoContato' => $dataAleatoria,
+                    'quantidadeDeContato' => rand(1, 10),
+                    'observacao' => fake()->sentence(10),
+                    'nicho_id' => $nichos->random()->id,
+                ]);
+            }
         }
     }
 }

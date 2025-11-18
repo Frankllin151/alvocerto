@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\prospeccaoController;
 use App\Http\Controllers\NichoController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\relatorioController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/dashboard/clientes/{id}/update', [ProspeccaoController::class, 'update'])->name('clientes.update');
     Route::delete('/dashboard/clientes/{id}/delete', [ProspeccaoController::class, 'destroy'])->name('clientes.destroy');
     Route::post('/dashboard/clientes/importar', [ProspeccaoController::class, 'importar'])->name('clientes.importar');
+});
+
+
+// Relatorio 
+Route::middleware(["auth"])->group(function(){
+    Route::get("/dashboard/relatorio", [relatorioController::class, "index"])->name("relatorio");
 });
 
 
