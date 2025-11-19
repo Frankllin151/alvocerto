@@ -57,10 +57,11 @@
                         <a href="{{route("relatorio")}}" class="nav-item 
                         {{Route::currentRouteName() == 'relatorio' ? 'active' : ''}}
                          flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition" data-page="analytics">
-                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-    d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" />
+    d="M9 17v-6h6v6m2 4H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z" />
 </svg>
+
 <span>Relatório</span>
                         </a>
                     </li>
@@ -70,10 +71,11 @@
                         <a href="{{route("estagio.de.contato.index")}}" class="nav-item 
                         {{Route::currentRouteName() == 'estagio.de.contato.index' ? 'active' : ''}}
                          flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition" data-page="analytics">
-                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-    d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" />
+    d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-9a4 4 0 110 8 4 4 0 010-8z" />
 </svg>
+
 <span>Estágio de
  Contato</span>
                         </a>
