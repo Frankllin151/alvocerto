@@ -85,39 +85,49 @@ const chartLabels = {!! json_encode($labels) !!};
 
 // ---------- MENSAL CHART ----------
  const ctx = document.getElementById("mensalChartAnual");
+ const nichoDataMensal = {!! json_encode($dadosNichosMensal) !!}; 
+
+ const dadoNichoMensal = nichoDataMensal.map(nicho => ({
+    label: nicho.label,
+    data: nicho.data,
+    borderWidth: 2,
+    tension: 0.4,
+    borderColor: getRandomColor(),
+    backgroundColor: "transparent",
+    pointRadius: 3
+}));
 
 
- new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [
-                'Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun',
-                'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
-            ],
-            datasets: [{
-                label: 'Clientes por mês',
-                data: [12, 19, 3, 5, 2, 15, 22, 30, 25, 18, 12, 20], // valores fictícios
-                borderWidth: 1,
-                tension: 0.4, // curva suave
-                borderColor: '#3B82F6',
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                pointRadius: 3,
-                pointBackgroundColor: '#1D4ED8',
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+function getRandomColor() {
+    return `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`;
+}
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [
+            'Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun',
+            'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+        ],
+        datasets: dadoNichoMensal 
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
             }
         }
-    });
-
+    }
+});
 
     // ------- Chart 10 anos ------
     const ctx10 = document.getElementById('chart10Anos');
+
+    // Dados vindo do backend
+    const estagios = {!! json_encode($EstagioDeContatoDezAnos) !!};
+
+    console.log(estagios);
 
     // Meses fixos
     const meses = [
@@ -127,37 +137,27 @@ const chartLabels = {!! json_encode($labels) !!};
 
     // 10 cores
     const cores = [
-        '#3B82F6', // azul
-        '#EF4444', // vermelho
-        '#10B981', // verde
-        '#F59E0B', // amarelo
-        '#6366F1', // roxo
-        '#EC4899', // rosa
-        '#14B8A6', // teal
-        '#8B5CF6', // roxo claro
-        '#F43F5E', // pink escuro
-        '#0EA5E9'  // azul claro
+        '#3B82F6', '#EF4444', '#10B981', '#F59E0B',
+        '#6366F1', '#EC4899', '#14B8A6', '#8B5CF6',
+        '#F43F5E', '#0EA5E9'
     ];
 
-    // Função para gerar valores fake de janeiro a dezembro
-    function gerarValoresFake() {
-        return Array.from({ length: 12 }, () => Math.floor(Math.random() * 50) + 10);
-    }
+    // Você quer exibir SOMENTE UM estágio por vez (melhor UX)
+    // Então vamos pegar o primeiro estágio como exemplo:
+    const estagio = estagios[0];
 
-    // Anos (últimos 10 anos)
-    const anoAtual = new Date().getFullYear();
-    const anos = Array.from({ length: 10 }, (_, i) => anoAtual - i);
+    const anos = Object.keys(estagio.data);
 
-    // Gerar datasets
+    // Criar datasets reais
     const datasets = anos.map((ano, index) => ({
-        label: ano.toString(),
-        data: gerarValoresFake(),
-        borderColor: cores[index],
-        backgroundColor: cores[index] + '33', // cor transparente
-        borderWidth: 1,
+        label: ano,
+        data: estagio.data[ano], // valores reais
+        borderColor: cores[index % cores.length],
+        backgroundColor: cores[index % cores.length] + "33",
+        borderWidth: 2,
         tension: 0.4,
         pointRadius: 3,
-        pointBackgroundColor: cores[index]
+        pointBackgroundColor: cores[index % cores.length]
     }));
 
     // Criar gráfico
@@ -169,10 +169,7 @@ const chartLabels = {!! json_encode($labels) !!};
         },
         options: {
             responsive: true,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
+            interaction: { mode: 'index', intersect: false },
             scales: {
                 y: { beginAtZero: true }
             }

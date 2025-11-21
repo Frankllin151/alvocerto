@@ -58,13 +58,75 @@ foreach($nicho as $n){
 
    $meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
-   
+   $datasets = [];
 
+   foreach($nichos as $nicho){
+    $totaisPorMes = array_fill(0,12,0); 
 
+    $resultados = Cliente::select(
+                DB::raw("MONTH(ultimoContato) as mes"),
+                DB::raw("COUNT(*) as total")
+            )
+            ->where("nicho_id", $nicho->id)
+            ->whereYear("ultimoContato", $ano)
+            ->groupBy(DB::raw("MONTH(ultimoContato)"))
+            ->get();
+
+            foreach ($resultados as $r) {
+            $totaisPorMes[$r->mes - 1] = $r->total;
+        }
+
+        $datasets[] = [
+            "label" => $nicho->nicho,
+            "data"  => $totaisPorMes,
+        ];
+
+   }
+
+   return $datasets;
 
   }
-  public  function getPorMensalAnosEstagiosContato()
-  {
-    // Grafico por anos com variedade de Estagios de Contatos 
-  }
+  public function getPorMensalAnosEstagiosContato()
+{
+    $anoAtual = date("Y");
+    $anos = range($anoAtual - 9, $anoAtual); // últimos 10 anos
+
+    $estagios = Cliente::select("estagio_de_contato")
+        ->distinct()
+        ->pluck("estagio_de_contato");
+
+    $resultado = [];
+
+    foreach ($estagios as $estagio) {
+
+        $dataset = [
+            "label" => $estagio,
+            "data"  => []
+        ];
+
+        foreach ($anos as $ano) {
+
+            // valores Jan..Dez -> array de 12 posições
+            $mensal = Cliente::select(DB::raw("MONTH(ultimoContato) as mes"), DB::raw("COUNT(*) as total"))
+                ->where("estagio_de_contato", $estagio)
+                ->whereYear("ultimoContato", $ano)
+                ->groupBy("mes")
+                ->pluck("total", "mes")
+                ->toArray();
+
+            // preencher 12 posições
+            $dadosMes = [];
+            for ($m = 1; $m <= 12; $m++) {
+                $dadosMes[] = $mensal[$m] ?? 0;
+            }
+
+            // adiciona o array de um ano dentro do dataset
+            $dataset["data"][$ano] = $dadosMes;
+        }
+
+        $resultado[] = $dataset;
+    }
+
+    return $resultado;
+}
 }

@@ -21,11 +21,16 @@ class relatorioController extends Controller
     {
       $dadoEstagio = $this->relatorioService->getEstagiosContato();
       $dadoNicho = $this->relatorioService->getNichos();
-
+      $dadosNichosMensal = $this->relatorioService->getMensalNichos();
+      $EstagioDeContatoDezAnos = $this->relatorioService->getPorMensalAnosEstagiosContato();
+     
+  
      return view("relatorio.show", ["labels" => $dadoEstagio["labels"]
      , "values" => $dadoEstagio["values"],
      "labelsNicho" => $dadoNicho["labelsNicho"] ,
-     "valuesNicho" => $dadoNicho["valuesNicho"]
+     "valuesNicho" => $dadoNicho["valuesNicho"], 
+     "dadosNichosMensal" => $dadosNichosMensal, 
+     "EstagioDeContatoDezAnos" => $EstagioDeContatoDezAnos
     ]);
     }
 }
