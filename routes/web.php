@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\relatorioController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect("/login");
 });
 
 
@@ -22,6 +22,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dashboard/clientes/importar', [ProspeccaoController::class, 'importar'])->name('clientes.importar');
 });
 
+
+/***
+ * 
+ * DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=u540953574_alvocerto
+DB_USERNAME=u540953574_alvocerto
+DB_PASSWORD=OOmGRzT^2j
+
+ */
 
 // Relatorio 
 Route::middleware(["auth"])->group(function(){

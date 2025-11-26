@@ -170,8 +170,8 @@
 
    <div class="flex justify-center items-center">
     <div>
-
-        {{-- Botão anterior --}}
+        @if ($cliente->total() > 0 && $cliente->lastPage() < 1)
+         {{-- Botão anterior --}}
        @if ($cliente->currentPage() > 1)
     <a href="{{ $cliente->previousPageUrl() }}"
         class="pagination-btn rounded-md border border-slate-300 py-2 px-3 text-sm text-slate-600 ml-2">
@@ -219,7 +219,11 @@
         class="pagination-btn rounded-md border border-slate-300 py-2 px-3 text-sm text-slate-600 ml-2">
         Próximo
     </a>
+
 @endif
+        @endif
+
+       
 
     </div>
 </div>

@@ -10,15 +10,26 @@
     <!-- Lado Esquerdo - nichoChart -->
     <div class="w-1/2 bg-white p-6 rounded-xl shadow-md">
         <h2 class="text-xl font-semibold mb-2">Nichos</h2>
-        
-        <canvas id="nichoChart"></canvas>
+        @if(!empty($labelsNicho) && !empty($valuesNicho))
+      
+           <div id="nichoEmpty" class="text-center text-gray-500 py-12">Dados ainda não existem</div>
+        @else 
+              <canvas id="nichoChart"></canvas>
+        @endif
+
+       
     </div>
 
     <!-- Lado Direito - nichoChart-->
     <div class="w-1/2 bg-white p-6 rounded-xl shadow-md">
         <h2 class="text-xl font-semibold mb-2">Estagio de Contato</h2>
-
+         @if(!empty($labels) && !empty($values))
+          <div id="nichoEmpty"  class="text-center text-gray-500 py-12">Dados ainda não existem</div>
+         @else 
         <canvas id="EstagioContatoChart"></canvas>
+         @endif
+
+     
     </div>
 
 </div>
@@ -42,9 +53,9 @@
 <script>
     // ---------- NICHO  CHART ----------
     const pieCtx = document.getElementById('nichoChart');
-const nichoLabels = {!! json_encode($labelsNicho) !!};
-    const nichoValues = {!! json_encode($valuesNicho) !!};
-    console.log(nichoValues);
+const nichoLabels = {!! json_encode($labelsNicho ?? []) !!};
+    const nichoValues = {!! json_encode($valuesNicho ?? []) !!};
+    
     
     new Chart(pieCtx, {
         type: 'pie',

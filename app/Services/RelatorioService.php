@@ -42,6 +42,7 @@ foreach($nicho as $n){
     $valuesNicho[] = $total;
 }
 
+
   return [
     "labelsNicho" => $labelsNicho , 
     "valuesNicho" => $valuesNicho
